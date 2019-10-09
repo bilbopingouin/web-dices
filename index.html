@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<title>Dices</title>
+
+		<style rel="stylesheet" type="text/css">
+			#wrapper {
+				border: 2px solid aquamarine;
+				   -moz-border-radius: 15px;
+				-webkit-border-radius: 15px;
+				        border-radius: 15px;
+				width: 600px;
+
+			}
+			#control {
+				/*background-color: blue;*/
+				color: blue;
+			}
+			#canvas {
+				border: 5px solid #422518;
+				   -moz-border-radius: 15px;
+				-webkit-border-radius: 15px;
+				        border-radius: 15px;
+				background-color: green;
+
+			}
+		</style>
+
+	</head>
+	<body>
+
+		<div id="background">
+			<div id="wrapper">
+				<div id="results">
+					<canvas id="canvas" width="500" height="300">Your browser does not support HTML5, sorry about that.</canvas>
+				</div>
+				<div id="control">
+					<div id="dice_types">
+						D
+						<div>
+							<select id="dtype">
+								<option value="4">4</option>
+								<option value="6">6</option>
+								<option value="8">8</option>
+								<option value="10">10</option>
+								<option value="12">12</option>
+								<option value="20">20</option>
+								<option value="100">100</option>
+								<option value="N">N</option>
+							</select>
+						</div>
+						<div style="visibility:hidden" id="DN">N=</div>
+					</div>
+					<div id="dice_number>">
+						x
+						<div>	
+							<select id="ndice">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+							</select>
+						</div>
+					</div>
+					<div id="roll"><a href="javascript:roll_dices();">Roll</a></div>
+					<script type="text/javascript">
+						/* Get the result of a single dice */
+						var roll_a_dice = function (dice_type) {
+							return Math.floor((Math.random() * dice_type) + 1);
+						}
+
+						/* Run N dices */
+						var roll_n_dices = function(dice_type,n) {
+							//out = "";
+							out = [];
+							for (var i=0 ; i<n ; i++)
+							{
+								var dice = roll_a_dice(dice_type);
+								//console.log(dice);
+								out.push(dice);
+								//out +=  dice.toString() + " ";
+							}
+							return out;
+						}
+
+						/* Show the dice result */
+						var canvas_show = function (dtypes,ndices) {
+							//console.log("inside canvas_show");
+							var canvas = document.getElementById("canvas");
+							//console.log("Rolling "+ndices+" x D"+dtypes+" = "+roll_n_dices(dtypes,ndices));
+
+							var list_rolls = roll_n_dices(dtypes,ndices);
+							console.log(list_rolls);
+
+							var ctx = canvas.getContext("2d");
+
+							ctx.clearRect(0,0,canvas.width,canvas.height);
+							ctx.font = "30px Arial";
+							ctx.fillStyle = "white";
+							for (var i=0 ; i<ndices ; i++)
+							{
+								ctx.fillText(list_rolls[i].toString(),10+50*i,50);
+							}
+							ctx.fillText("Sum: "+list_rolls.reduce(function(a,b){return a+b;},0).toString(),30,250);
+						}
+
+						/* Reacting to the click */
+						var roll_dices = function () {
+							var dtypes = document.getElementById("dtype").value;
+							var ndices = document.getElementById("ndice").value;
+
+							//alert("Rolling "+ndices+" x D"+dtypes+" = "+roll_n_dices(dtypes,ndices));
+							//console.log("Rolling "+ndices+" x D"+dtypes+" = "+roll_n_dices(dtypes,ndices));
+							canvas_show(dtypes,ndices);
+						}
+					</script>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
