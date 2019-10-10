@@ -11,11 +11,8 @@
 				-webkit-border-radius: 15px;
 				        border-radius: 15px;
 				width: 600px;
+				margin: auto;
 
-			}
-			#control {
-				/*background-color: blue;*/
-				color: blue;
 			}
 			#canvas {
 				border: 5px solid #422518;
@@ -23,7 +20,24 @@
 				-webkit-border-radius: 15px;
 				        border-radius: 15px;
 				background-color: green;
-
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			#control {
+				/*background-color: blue;*/
+				color: blue;
+				height: 30px;
+			}
+			#control_wrapper {
+				margin-left: 100px;
+				margin-top: 5px;
+			}
+			#control div {
+			  float: left;
+			}
+			#roll {
+			  margin-left: 10px;
 			}
 		</style>
 
@@ -36,9 +50,12 @@
 					<canvas id="canvas" width="500" height="300">Your browser does not support HTML5, sorry about that.</canvas>
 				</div>
 				<div id="control">
+				    <div id="control_wrapper">
 					<div id="dice_types">
+						<div class="text">
 						D
-						<div>
+						</div>
+						<div class="select">
 							<select id="dtype">
 								<option value="4">4</option>
 								<option value="6">6</option>
@@ -50,11 +67,16 @@
 								<option value="N">N</option>
 							</select>
 						</div>
-						<div style="visibility:hidden" id="DN">N=</div>
+						<div style="display:none" id="DN">
+						  <div class="text">=</div>
+						  <input type="text" id="extra_type" name="xtype" size="5px">
+						</div>
 					</div>
-					<div id="dice_number>">
+					<div id="dice_number">
+						<div class="text">
 						x
-						<div>	
+						</div>
+						<div class="select">	
 							<select id="ndice">
 								<option value="1">1</option>
 								<option value="2">2</option>
@@ -71,6 +93,24 @@
 					</div>
 					<div id="roll"><a href="javascript:roll_dices();">Roll</a></div>
 					<script type="text/javascript">
+						/* Display or not the extra field */
+						var type_select	  = document.getElementById("dtype");
+						var customer_type  = document.getElementById("DN");
+						if ( "N" == type_select.value )
+						{
+						  customer_type.style.display = "inline";
+						}
+						type_select.addEventListener("change",function() {
+						  if ( "N" == type_select.value )
+						  { 
+						      customer_type.style.display = "inline";
+						  }
+						  else
+						  {
+						    customer_type.style.display = "none";
+						  }
+						});
+
 						/* Get the result of a single dice */
 						var roll_a_dice = function (dice_type) {
 							return Math.floor((Math.random() * dice_type) + 1);
@@ -108,20 +148,45 @@
 							{
 								ctx.fillText(list_rolls[i].toString(),10+50*i,50);
 							}
-							ctx.fillText("Sum: "+list_rolls.reduce(function(a,b){return a+b;},0).toString(),30,250);
+							if (ndices>1)
+							{
+								ctx.fillText("Sum: "+list_rolls.reduce(function(a,b){return a+b;},0).toString(),30,250);
+							}
 						}
 
 						/* Reacting to the click */
 						var roll_dices = function () {
 							var dtypes = document.getElementById("dtype").value;
 							var ndices = document.getElementById("ndice").value;
+							var num_dtypes=0;
 
 							//alert("Rolling "+ndices+" x D"+dtypes+" = "+roll_n_dices(dtypes,ndices));
 							//console.log("Rolling "+ndices+" x D"+dtypes+" = "+roll_n_dices(dtypes,ndices));
-							canvas_show(dtypes,ndices);
+							if ("N" == dtypes)
+							{
+							  var entered_dice_type = document.getElementById("extra_type").value;
+							  if (isNaN(entered_dice_type))
+							  {
+							    alert("Please enter a number!");
+							  }
+							  else
+							  {
+							    num_dtypes = Math.floor(Number(entered_dice_type));
+							    document.getElementById("extra_type").value = num_dtypes;  
+							    //console.log(document.getElementById("extra_type").value);
+							  }
+							}
+							else
+							{
+							  num_dtypes = Number(dtypes);
+							}
+							console.log(num_dtypes);
+							canvas_show(num_dtypes,ndices);
 						}
 					</script>
 				</div>
+				<div id="foot"></div>
+			    </div>
 			</div>
 		</div>
 	</body>
